@@ -1,0 +1,117 @@
+
+> frontend@0.1.0 build-storybook
+> storybook build --output-dir=C:\Users\tomin\AppData\Local\Temp\chromatic--5812-NHgSZ4dmIV7C
+
+
+[90m┌[39m  Building storybook v10.4.6
+[90m│[39m
+[32m◇[39m  Cleaning outputDir:
+[90m│[39m  [36mC:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C[39m
+[90m│[39m
+[32m◇[39m  Loading presets
+[90m│[39m
+[32m◇[39m  Building manager..
+[90m│[39m
+[34m●[39m  Building preview..
+[90m│[39m  [43mVite[49m [36mvite v8.1.0 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...[90m│[39m
+[34m●[39m  Copying static files: [36mpublic[39m at
+[90m│[39m  [36mC:\Users\tomin\AppData\Local\Temp\chromatic--5812-NHgSZ4dmIV7C[39m
+✓ 390 modules transformed.
+rendering chunks...
+computing gzip size...
+[90m│[39m  [43mVite[49m
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/iframe.html
+[90m│[39m  18.77 kB │ gzip:   5.25 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Photo-accueil-m1_2FxO_.webp
+[90m│[39m  421.43 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/iframe-CMv2Dkys.css
+[90m│[39m  27.38 kB │ gzip:   6.15 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/react-BhcbjRLH.js
+[90m│[39m  0.08 kB │ gzip:   0.10 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/chunk-242VQQM5-CBWsT91f.js
+[90m│[39m  0.22 kB │ gzip:   0.19 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/chunk-S2IHWCOG-BXVpv45N.js
+[90m│[39m  0.24 kB │ gzip:   0.17 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/formatter-L2YTDE3Q-rcs_SYVU.js
+[90m│[39m  0.27 kB │ gzip:   0.22 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/PropertyCardStorybook-jbPy60gC.js
+[90m│[39m  1.95 kB │ gzip:   0.86 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/preload-helper-BtWQueYT.js
+[90m│[39m  2.52 kB │ gzip:   1.31 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/lucide-react-X48JUE1d.js
+[90m│[39m  2.98 kB │ gzip:   1.58 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/chunk-3LY4VQVK-Dn5aNBK3.js
+[90m│[39m  4.03 kB │ gzip:   1.71 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/PropertyCard.stories-WUTDn0-D.js
+[90m│[39m  4.13 kB │ gzip:   1.85 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Login.stories-aQc1rrio.js
+[90m│[39m  4.19 kB │ gzip:   1.89 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Register.stories-NSMpOOZd.js
+[90m│[39m  5.20 kB │ gzip:   2.07 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Home.stories-C-kDaAsE.js
+[90m│[39m  6.41 kB │ gzip:   2.90 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/FavoritesClient.stories-D1NPyxos.js
+[90m│[39m  10.96 kB │ gzip:   4.27 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/PropertyDetailClient.stories-Cw5XB9Lp.js
+[90m│[39m  12.49 kB │ gzip:   4.11 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Navbar.stories-DNexLGWk.js
+[90m│[39m  13.51 kB │ gzip:   8.33 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/image-D46WVXya.js
+[90m│[39m  16.26 kB │ gzip:   6.14 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Addpropertiesstory.stories-D1n-t06r.js
+[90m│[39m  20.13 kB │ gzip:   6.15 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Chatclientstory.stories-NoK4bZ11.js
+[90m│[39m  21.87 kB │ gzip:   7.38 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/chunk-LITCR56V-CazU6S3A.js
+[90m│[39m  21.93 kB │ gzip:   7.28 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/vite-inject-mocker-entry.js
+[90m│[39m  27.81 kB │ gzip:   9.63 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/matchers-JIUQ3HVY--Bh7OfyG.js
+[90m│[39m  28.76 kB │ gzip:   9.66 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/Color-KMSTOMOX-DmHGGQnK.js
+[90m│[39m  30.94 kB │ gzip:  11.63 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/WithTooltip-7X4HQR7L-Kekc9jXL.js
+[90m│[39m  33.21 kB │ gzip:  11.66 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/url-BeyFNfD5.js
+[90m│[39m  44.36 kB │ gzip:  17.29 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/theming-BhFRuujQ.js
+[90m│[39m  55.32 kB │ gzip:  21.38 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/syntaxhighlighter-RTCFPKCB-vwrXWV4b.js
+[90m│[39m  76.52 kB │ gzip:  27.55 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/DocsRenderer-JROSPFPF-CfC9cI_B.js
+[90m│[39m  184.66 kB │ gzip:  58.70 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/react-18-CLc-3VlO.js
+[90m│[39m  204.25 kB │ gzip:  64.20 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/components-DgWSxnvU.js
+[90m│[39m  552.21 kB │ gzip: 175.61 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/axe-CzVbn7S8.js
+[90m│[39m  579.38 kB │ gzip: 158.41 kB
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C/assets/iframe-BAIB-oyO.js
+[90m│[39m  1,268.00 kB │ gzip: 352.49 kB
+
+[90m│[39m
+[33m▲[39m  [43mVite[49m [33m[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins.
+[90m│[39m  Here is a breakdown:
+[90m│[39m  - vite-plugin-storybook-nextjs-image (38%)
+[90m│[39m  - vite-plugin-storybook-nextjs-font (31%)
+[90m│[39m  - storybook:code-generator-plugin (15%)
+[90m│[39m  - storybook:project-annotations-plugin (9%)
+[90m│[39m  See ]8;;https://rolldown.rs/reference/InputOptions.checks#plugintimingshttps://rolldown.rs/reference/InputOptions.checks#plugintimings]8;;
+[90m│[39m  for more details.
+[90m│[39m  [39m
+[90m│[39m
+[33m▲[39m  [43mVite[49m [33m[plugin builtin:vite-reporter]
+[90m│[39m  (!) Some chunks are larger than 500 kB after minification. Consider:
+[90m│[39m  - Using dynamic import() to code-split the application
+[90m│[39m  - Use build.rolldownOptions.output.codeSplitting to improve chunking:
+[90m│[39m  ]8;;https://rolldown.rs/reference/OutputOptions.codeSplittinghttps://rolldown.rs/reference/OutputOptions.codeSplitting]8;;
+[90m│[39m  - Adjust chunk size limit for this warning via
+[90m│[39m  build.chunkSizeWarningLimit.[39m
+[90m│[39m  [43mVite[49m [32m✓ built in 5.11s[39m
+[90m│[39m
+[32m◇[39m  Output directory:
+[90m│[39m  C:/Users/tomin/AppData/Local/Temp/chromatic--5812-NHgSZ4dmIV7C
+[90m│[39m
+[90m└[39m  Storybook build completed successfully
+
