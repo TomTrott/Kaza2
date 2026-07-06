@@ -32,10 +32,17 @@ security:
             jwt: ~
 
     access_control:
+        # Routes publiques d'authentification
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/request-password-reset, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/reset-password, roles: PUBLIC_ACCESS }
+
+        # Consultation publique des logements
+        - { path: ^/api/properties$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/properties/[0-9]+$, roles: PUBLIC_ACCESS }
+
+        # Tout le reste de l'API nécessite un JWT
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
