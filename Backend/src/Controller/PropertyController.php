@@ -2,47 +2,30 @@
 
 namespace App\Controller;
 
-use App\Repository\PropertyRepository;
+use App\Service\PropertyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/properties')]
 class PropertyController extends AbstractController
 {
+    public function __construct(
+        private PropertyService $service
+    ) {
+    }
+
     #[Route('', methods: ['GET'])]
-    public function index(
-        PropertyRepository $repository,
-        SerializerInterface $serializer
-    ): JsonResponse {
-
-        $properties = $repository->findAllOrdered();
-
-        $json = $serializer->serialize(
-            $properties,
-            'json',
-            [
-                'ignored_attributes' => ['host']
-            ]
-        );
-
-        return new JsonResponse(
-            $json,
-            200,
-            [],
-            true
-        );
+    public function list(): JsonResponse
+    {
+        return $this->json($this->service->list());
     }
 
     #[Route('/{id}', methods: ['GET'])]
-    public function show(
-        int $id,
-        PropertyRepository $repository,
-        SerializerInterface $serializer
-    ): JsonResponse {
-
-        $property = $repository->find($id);
+    public function getById(string $id): JsonResponse
+    {
+        $property = $this->service->get($id);
 
         if (!$property) {
             return $this->json([
@@ -50,19 +33,65 @@ class PropertyController extends AbstractController
             ], 404);
         }
 
-        $json = $serializer->serialize(
-            $property,
-            'json',
-            [
-                'ignored_attributes' => ['host']
-            ]
-        );
+        return $this->json($property);
+    }
 
-        return new JsonResponse(
-            $json,
-            200,
-            [],
-            true
-        );
+    #[Route('', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
+    {
+        try {
+
+            $property = $this->service->create(
+                json_decode($request->getContent(), true)
+            );
+
+            return $this->json($property, 201);
+
+        } catch (\Throwable $e) {
+
+            return $this->json([
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+
+        }
+    }
+
+    #[Route('/{id}', methods: ['PUT'])]
+    public function update(string $id, Request $request): JsonResponse
+    {
+        try {
+
+            $property = $this->service->update(
+                $id,
+                json_decode($request->getContent(), true)
+            );
+
+            return $this->json($property);
+
+        } catch (\Throwable $e) {
+
+            return $this->json([
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+
+        }
+    }
+
+    #[Route('/{id}', methods: ['DELETE'])]
+    public function delete(string $id): JsonResponse
+    {
+        try {
+
+            $this->service->delete($id);
+
+            return new JsonResponse(null, 204);
+
+        } catch (\Throwable $e) {
+
+            return $this->json([
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+
+        }
     }
 }

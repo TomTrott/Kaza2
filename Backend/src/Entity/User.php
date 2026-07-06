@@ -6,8 +6,9 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
@@ -16,12 +17,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['property'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['property'])]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['property'])]
     private ?string $picture = null;
 
     #[ORM\Column(length: 50)]
@@ -47,10 +51,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->properties = new ArrayCollection();
     }
 
-    // =====================================================
-    // Getters & Setters
-    // =====================================================
-
     public function getId(): ?int
     {
         return $this->id;
@@ -64,7 +64,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -76,7 +75,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPicture(?string $picture): static
     {
         $this->picture = $picture;
-
         return $this;
     }
 
@@ -88,7 +86,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(string $role): static
     {
         $this->role = $role;
-
         return $this;
     }
 
@@ -100,7 +97,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -112,7 +108,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPasswordHash(?string $passwordHash): static
     {
         $this->passwordHash = $passwordHash;
-
         return $this;
     }
 
@@ -124,7 +119,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetToken(?string $resetToken): static
     {
         $this->resetToken = $resetToken;
-
         return $this;
     }
 
@@ -136,13 +130,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetExpires(?int $resetExpires): static
     {
         $this->resetExpires = $resetExpires;
-
         return $this;
     }
-
-    // =====================================================
-    // Relations
-    // =====================================================
 
     public function getProperties(): Collection
     {
@@ -170,10 +159,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // =====================================================
-    // Symfony Security
-    // =====================================================
-
     public function getUserIdentifier(): string
     {
         return $this->email ?? '';
@@ -192,7 +177,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             default => ['ROLE_CLIENT'],
         };
 
-        // Toujours garantir ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -200,6 +184,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // Aucun champ sensible temporaire
     }
 }
