@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -50,6 +52,31 @@ class Property
     #[ORM\Column(name: 'price_per_night')]
     #[Groups(['property'])]
     private int $pricePerNight = 80;
+
+    /**
+     * @var Collection<int, PropertyPicture>
+     */
+    #[ORM\OneToMany(targetEntity: PropertyPicture::class, mappedBy: 'property', orphanRemoval: true)]
+    private Collection $pictures;
+
+    /**
+     * @var Collection<int, PropertyEquipment>
+     */
+    #[ORM\OneToMany(targetEntity: PropertyEquipment::class, mappedBy: 'property', orphanRemoval: true)]
+    private Collection $equipments;
+
+    /**
+     * @var Collection<int, PropertyTag>
+     */
+    #[ORM\OneToMany(targetEntity: PropertyTag::class, mappedBy: 'property', orphanRemoval: true)]
+    private Collection $tags;
+
+    public function __construct()
+    {
+        $this->pictures = new ArrayCollection();
+        $this->equipments = new ArrayCollection();
+        $this->tags = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -159,6 +186,96 @@ class Property
     public function setPricePerNight(int $pricePerNight): static
     {
         $this->pricePerNight = $pricePerNight;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PropertyPicture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(PropertyPicture $picture): static
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures->add($picture);
+            $picture->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(PropertyPicture $picture): static
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getProperty() === $this) {
+                $picture->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PropertyEquipment>
+     */
+    public function getEquipments(): Collection
+    {
+        return $this->equipments;
+    }
+
+    public function addEquipment(PropertyEquipment $equipment): static
+    {
+        if (!$this->equipments->contains($equipment)) {
+            $this->equipments->add($equipment);
+            $equipment->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipment(PropertyEquipment $equipment): static
+    {
+        if ($this->equipments->removeElement($equipment)) {
+            // set the owning side to null (unless already changed)
+            if ($equipment->getProperty() === $this) {
+                $equipment->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PropertyTag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(PropertyTag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(PropertyTag $tag): static
+    {
+        if ($this->tags->removeElement($tag)) {
+            // set the owning side to null (unless already changed)
+            if ($tag->getProperty() === $this) {
+                $tag->setProperty(null);
+            }
+        }
+
         return $this;
     }
 }
