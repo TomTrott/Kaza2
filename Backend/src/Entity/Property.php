@@ -2,92 +2,120 @@
 
 namespace App\Entity;
 
+use App\Repository\PropertyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: PropertyRepository::class)]
 #[ORM\Table(name: 'properties')]
 class Property
 {
     #[ORM\Id]
-    #[ORM\Column(length: 20)]
-    #[Groups(['property'])]
-    private ?string $id = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    #[Groups(['property:list', 'property:detail'])]
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['property'])]
+    #[Groups(['property:list', 'property:detail'])]
     private string $title;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['property'])]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['property:list', 'property:detail'])]
     private string $slug;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['property'])]
+    #[Groups(['property:detail'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['property'])]
+    #[Groups(['property:list', 'property:detail'])]
     private ?string $cover = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['property'])]
+    #[Groups(['property:list', 'property:detail'])]
     private string $location;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'properties')]
-    #[ORM\JoinColumn(name: 'host_id', referencedColumnName: 'id', nullable: false)]
-    #[Groups(['property'])]
+    #[ORM\ManyToOne(inversedBy: 'properties')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['property:list', 'property:detail'])]
     private ?User $host = null;
 
-    #[ORM\Column(name: 'rating_avg', nullable: true)]
-    #[Groups(['property'])]
-    private ?float $ratingAvg = 0;
+    #[ORM\Column(nullable: true)]
+    #[Groups(['property:list', 'property:detail'])]
+    private ?float $ratingAvg = null;
 
-    #[ORM\Column(name: 'ratings_count')]
-    #[Groups(['property'])]
+    #[ORM\Column]
+    #[Groups(['property:list', 'property:detail'])]
     private int $ratingsCount = 0;
 
-    #[ORM\Column(name: 'price_per_night')]
-    #[Groups(['property'])]
+    #[ORM\Column]
+    #[Groups(['property:list', 'property:detail'])]
     private int $pricePerNight = 80;
 
-    /**
-     * @var Collection<int, PropertyPicture>
-     */
-    #[ORM\OneToMany(targetEntity: PropertyPicture::class, mappedBy: 'property', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        mappedBy: 'property',
+        targetEntity: PropertyPicture::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[Groups(['property:detail'])]
     private Collection $pictures;
 
-    /**
-     * @var Collection<int, PropertyEquipment>
-     */
-    #[ORM\OneToMany(targetEntity: PropertyEquipment::class, mappedBy: 'property', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        mappedBy: 'property',
+        targetEntity: PropertyEquipment::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[Groups(['property:detail'])]
     private Collection $equipments;
 
-    /**
-     * @var Collection<int, PropertyTag>
-     */
-    #[ORM\OneToMany(targetEntity: PropertyTag::class, mappedBy: 'property', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        mappedBy: 'property',
+        targetEntity: PropertyTag::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[Groups(['property:detail'])]
     private Collection $tags;
+
+    /**
+     * @var Collection<int, Favorite>
+     */
+    #[ORM\OneToMany(targetEntity: Favorite::class, mappedBy: 'property', orphanRemoval: true)]
+    #[Groups(['property:detail'])]
+    private Collection $favorites;
+
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'property', orphanRemoval: true)]
+    #[Groups(['property:detail'])]
+    private Collection $ratings;
+
+    /**
+     * @var Collection<int, Conversation>
+     */
+    #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'property', orphanRemoval: true)]
+    #[Groups(['property:detail'])]
+    private Collection $conversations;
 
     public function __construct()
     {
         $this->pictures = new ArrayCollection();
         $this->equipments = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(?string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getTitle(): string
@@ -189,9 +217,6 @@ class Property
         return $this;
     }
 
-    /**
-     * @return Collection<int, PropertyPicture>
-     */
     public function getPictures(): Collection
     {
         return $this->pictures;
@@ -210,7 +235,6 @@ class Property
     public function removePicture(PropertyPicture $picture): static
     {
         if ($this->pictures->removeElement($picture)) {
-            // set the owning side to null (unless already changed)
             if ($picture->getProperty() === $this) {
                 $picture->setProperty(null);
             }
@@ -219,9 +243,6 @@ class Property
         return $this;
     }
 
-    /**
-     * @return Collection<int, PropertyEquipment>
-     */
     public function getEquipments(): Collection
     {
         return $this->equipments;
@@ -240,7 +261,6 @@ class Property
     public function removeEquipment(PropertyEquipment $equipment): static
     {
         if ($this->equipments->removeElement($equipment)) {
-            // set the owning side to null (unless already changed)
             if ($equipment->getProperty() === $this) {
                 $equipment->setProperty(null);
             }
@@ -249,9 +269,6 @@ class Property
         return $this;
     }
 
-    /**
-     * @return Collection<int, PropertyTag>
-     */
     public function getTags(): Collection
     {
         return $this->tags;
@@ -270,9 +287,95 @@ class Property
     public function removeTag(PropertyTag $tag): static
     {
         if ($this->tags->removeElement($tag)) {
-            // set the owning side to null (unless already changed)
             if ($tag->getProperty() === $this) {
                 $tag->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            if ($favorite->getProperty() === $this) {
+                $favorite->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            if ($rating->getProperty() === $this) {
+                $rating->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            if ($conversation->getProperty() === $this) {
+                $conversation->setProperty(null);
             }
         }
 

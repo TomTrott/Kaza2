@@ -46,9 +46,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'host', targetEntity: Property::class)]
     private Collection $properties;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Favorite::class, orphanRemoval: true)]
+    private Collection $favorites;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Rating::class, orphanRemoval: true)]
+    private Collection $ratings;
+
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
+    private Collection $messages;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Conversation::class)]
+    private Collection $ownedConversations;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Conversation::class)]
+    private Collection $clientConversations;
+
     public function __construct()
     {
         $this->properties = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->ownedConversations = new ArrayCollection();
+        $this->clientConversations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -184,5 +204,155 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getUser() === $this) {
+                $favorite->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getUser() === $this) {
+                $rating->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getOwnedConversations(): Collection
+    {
+        return $this->ownedConversations;
+    }
+
+    public function addOwnedConversation(Conversation $ownedConversation): static
+    {
+        if (!$this->ownedConversations->contains($ownedConversation)) {
+            $this->ownedConversations->add($ownedConversation);
+            $ownedConversation->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwnedConversation(Conversation $ownedConversation): static
+    {
+        if ($this->ownedConversations->removeElement($ownedConversation)) {
+            // set the owning side to null (unless already changed)
+            if ($ownedConversation->getOwner() === $this) {
+                $ownedConversation->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getClientConversations(): Collection
+    {
+        return $this->clientConversations;
+    }
+
+    public function addClientConversation(Conversation $clientConversation): static
+    {
+        if (!$this->clientConversations->contains($clientConversation)) {
+            $this->clientConversations->add($clientConversation);
+            $clientConversation->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientConversation(Conversation $clientConversation): static
+    {
+        if ($this->clientConversations->removeElement($clientConversation)) {
+            // set the owning side to null (unless already changed)
+            if ($clientConversation->getClient() === $this) {
+                $clientConversation->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
     }
 }
