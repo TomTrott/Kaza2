@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/auth')]
 class AuthController extends AbstractController
 {
-    #[Route('/register', methods: ['POST'])]
+    #[Route('/register', name: 'app_auth_register', methods: ['POST'])]
     public function register(
         Request $request,
         EntityManagerInterface $em,
@@ -38,18 +38,19 @@ class AuthController extends AbstractController
 
         if ($users->findByEmail($data['email'])) {
             return $this->json([
-                'error' => 'Email déjà utilisé.'
+                'error' => 'Cet email est déjà utilisé.'
             ], 409);
         }
 
         $user = new User();
-        $user->setName($data['name']);
-        $user->setEmail($data['email']);
-        $user->setRole('client');
 
-        $user->setPasswordHash(
-            $hasher->hashPassword($user, $data['password'])
-        );
+        $user
+            ->setName(trim($data['name']))
+            ->setEmail(strtolower(trim($data['email'])))
+            ->setRole('client')
+            ->setPasswordHash(
+                $hasher->hashPassword($user, $data['password'])
+            );
 
         $em->persist($user);
         $em->flush();
@@ -66,7 +67,7 @@ class AuthController extends AbstractController
         ], 201);
     }
 
-    #[Route('/login', methods: ['POST'])]
+    #[Route('/login', name: 'app_auth_login', methods: ['POST'])]
     public function login(
         Request $request,
         UserRepository $users,
@@ -76,14 +77,23 @@ class AuthController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        $user = $users->findByEmail($data['email'] ?? '');
+        if (
+            empty($data['email']) ||
+            empty($data['password'])
+        ) {
+            return $this->json([
+                'error' => 'Email et mot de passe requis.'
+            ], 400);
+        }
+
+        $user = $users->findByEmail($data['email']);
 
         if (
             !$user ||
-            !$hasher->isPasswordValid($user, $data['password'] ?? '')
+            !$hasher->isPasswordValid($user, $data['password'])
         ) {
             return $this->json([
-                'error' => 'Identifiants invalides.'
+                'error' => 'Email ou mot de passe incorrect.'
             ], 401);
         }
 
