@@ -1,0 +1,16 @@
+services:
+  symfony:
+    build: .
+    container_name: kasa_backend
+
+    ports:
+      - "8000:80"
+
+    volumes:
+      - .:/var/www/html
+      - vendor_data:/var/www/html/vendor
+
+    working_dir: /var/www/html
+
+volumes:
+  vendor_data:
