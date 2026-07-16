@@ -381,4 +381,11 @@ class Property
 
         return $this;
     }
+//uniquement utile pour les tests.
+    public function setId(int $id): static
+{
+    $this->id = $id;
+
+    return $this;
+}
 }
