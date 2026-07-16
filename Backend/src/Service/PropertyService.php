@@ -1,39 +1,43 @@
 <?php
 
 namespace App\Service;
-use App\Mapper\PropertyMapper;
+
+use App\DTO\PropertyResponse;
 use App\Entity\Property;
 use App\Entity\User;
+use App\Mapper\PropertyMapper;
 use App\Repository\PropertyRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
+
 class PropertyService
 {
-   public function __construct(
-    private EntityManagerInterface $em,
-    private PropertyRepository $properties,
-    private UserRepository $users,
-    private PropertyMapper $mapper
-) {
-}
+    public function __construct(
+        private EntityManagerInterface $em,
+        private PropertyRepository $properties,
+        private UserRepository $users,
+        private PropertyMapper $mapper
+    ) {
+    }
+
 
     public function list(): array
     {
-        // Récupère toutes les propriétés depuis la base
         $properties = $this->properties->findAll();
 
 
-        // Transforme chaque Entity Property en DTO utilisable par l'API
         return array_map(
-            fn(Property $property) => $this->mapper->map($property),
+            fn(Property $property)
+                => $this->mapper->map($property),
             $properties
         );
     }
 
-    public function get(int $id): ?Property
+
+    public function map(Property $property): PropertyResponse
     {
-        return $this->properties->find($id);
+        return $this->mapper->map($property);
     }
 
     public function create(array $data): Property
