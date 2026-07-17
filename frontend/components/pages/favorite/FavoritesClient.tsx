@@ -5,25 +5,31 @@ import api from "@/services/api";
 import PropertyCard from "@/components/Property/PropertyCard";
 
 export default function FavoritesClient() {
-  const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  const loadFavorites = async () => {
-    try {
-      const user = JSON.parse(
-        localStorage.getItem("user") || "null"
-      );
 
-      if (!user) {
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Charge les favoris de l'utilisateur connecté
+  const loadFavorites = async () => {
+
+    try {
+
+      const token = localStorage.getItem("token");
+      if (!token) {
         setFavorites([]);
         return;
       }
-      // setLoading(true);
+
       const res = await api.get(
-        `/api/users/${user.id}/favorites`
+        "/api/favorites"
       );
 
-      setFavorites(res.data);
+      const properties = res.data.map(
+        (favorite: any) => favorite.property
+      );
+
+      setFavorites(properties);
+
     } catch (error) {
       console.error(error);
     } finally {
@@ -31,42 +37,52 @@ export default function FavoritesClient() {
     }
   };
 
+
   useEffect(() => {
     loadFavorites();
 
-    const refresh = () => loadFavorites();
+    const refresh = () => {
+      loadFavorites();
+    };
 
     window.addEventListener(
       "favorites-changed",
       refresh
     );
-// Cleanup the event listener when the component unmounts
-    return () =>
+
+    return () => {
       window.removeEventListener(
         "favorites-changed",
         refresh
       );
+    };
   }, []);
 
+
   if (loading) {
+
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="text-center mt-10">
         Chargement...
       </div>
     );
+
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-14">
+
+    <main className="max-w-7xl mx-auto px-6 py-16">
       <div className="text-center mb-12">
-        <h1 className="text-[#9F3A1D] text-3xl md:text-5xl font-semibold">
+
+        <h1 className="text-4xl font-semibold">
           Vos favoris
         </h1>
 
         <p className="mt-4 text-gray-500 max-w-xl mx-auto">
+
           Retrouvez ici tous les logements que vous
-          avez aimés. Prêts à réserver ? Un simple
-          clic et votre prochain séjour est en route.
+          avez aimés. Prêts à réserver ?
+
         </p>
       </div>
 
@@ -77,21 +93,21 @@ export default function FavoritesClient() {
           </h2>
 
           <p className="text-gray-500 mt-3">
+
             Ajoutez des logements à vos favoris
             pour les retrouver ici.
           </p>
         </div>
       ) : (
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            lg:grid-cols-3
-            gap-6
-          "
-        >
-          {favorites.map((property: any) => (
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          lg:grid-cols-3
+          gap-6
+        ">
+          {favorites.map((property) => (
+
             <PropertyCard
               key={property.id}
               property={property}

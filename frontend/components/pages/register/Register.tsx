@@ -22,7 +22,7 @@ export default function RegisterPageClient() {
     }
 
     try {
-      const res = await api.post("/auth/register", {
+      const res = await api.post("/api/auth/register", {
         name: `${prenom} ${nom}`.trim(),
         email,
         password,

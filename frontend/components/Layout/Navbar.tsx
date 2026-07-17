@@ -31,8 +31,10 @@ export default function Navbar() {
       setUser(userData);
       // Récupérer le nombre de favoris depuis l'API
       try {
-        const res = await api.get(`/api/users/${userData.id}/favorites`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await api.get("/api/favorites", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         setFavoritesCount(res.data.length);
       } catch (err) {
