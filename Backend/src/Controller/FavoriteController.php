@@ -15,14 +15,13 @@ class FavoriteController extends AbstractController
 
     // Liste les favoris de l'utilisateur connecté (via le token JWT)
     #[Route('', methods: ['GET'])]
-    public function list(): JsonResponse
-    {
-        $user = $this->getUser();
-
-        return $this->json(
-            $this->service->list($user)
-        );
-    }
+public function list(): JsonResponse
+{
+    dd([
+        'authorization' => $_SERVER['HTTP_AUTHORIZATION'] ?? null,
+        'user' => $this->getUser(),
+    ]);
+}
 
     // Ajoute une propriété aux favoris de l'utilisateur connecté
     #[Route('/{propertyId}', methods: ['POST'])]

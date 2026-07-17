@@ -1,4 +1,5 @@
 security:
+
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: auto
 
@@ -9,6 +10,7 @@ security:
                 property: email
 
     firewalls:
+
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
@@ -20,24 +22,11 @@ security:
             jwt: ~
 
     access_control:
-        # Routes publiques d'authentification
+
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/auth/request-password-reset, roles: PUBLIC_ACCESS }
-        - { path: ^/api/auth/reset-password, roles: PUBLIC_ACCESS }
 
-        # Consultation publique des logements
         - { path: ^/api/properties$, roles: PUBLIC_ACCESS }
         - { path: ^/api/properties/[0-9]+$, roles: PUBLIC_ACCESS }
 
-        # Tout le reste de l'API nécessite un JWT
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-
-when@test:
-    security:
-        password_hashers:
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4
-                time_cost: 3
-                memory_cost: 10

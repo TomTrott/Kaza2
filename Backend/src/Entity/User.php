@@ -31,11 +31,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private string $role = 'client';
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $email = null;
+    #[ORM\Column(length: 255)]
+    private string $email; // Suppression de `nullable: true` pour éviter les problèmes d'authentification
 
-    #[ORM\Column(name: 'password_hash', length: 255, nullable: true)]
-    private ?string $passwordHash = null;
+    #[ORM\Column(name: 'password_hash', length: 255)]
+    private string $passwordHash; // Suppression de `nullable: true` pour éviter les problèmes de mot de passe
 
     #[ORM\Column(name: 'reset_token', length: 255, nullable: true)]
     private ?string $resetToken = null;
@@ -109,23 +109,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): static
+    public function setEmail(string $email): static
     {
         $this->email = $email;
         return $this;
     }
 
-    public function getPasswordHash(): ?string
+    public function getPasswordHash(): string
     {
         return $this->passwordHash;
     }
 
-    public function setPasswordHash(?string $passwordHash): static
+    public function setPasswordHash(string $passwordHash): static
     {
         $this->passwordHash = $passwordHash;
         return $this;
@@ -174,35 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeProperty(Property $property): static
     {
         $this->properties->removeElement($property);
-
         return $this;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email ?? '';
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->passwordHash;
-    }
-
-    public function getRoles(): array
-    {
-        $roles = match ($this->role) {
-            'admin' => ['ROLE_ADMIN'],
-            'owner' => ['ROLE_OWNER'],
-            default => ['ROLE_CLIENT'],
-        };
-
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function eraseCredentials(): void
-    {
     }
 
     /**
@@ -226,7 +198,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFavorite(Favorite $favorite): static
     {
         $this->favorites->removeElement($favorite);
-
         return $this;
     }
 
@@ -251,7 +222,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeRating(Rating $rating): static
     {
         $this->ratings->removeElement($rating);
-
         return $this;
     }
 
@@ -276,7 +246,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeOwnedConversation(Conversation $conversation): static
     {
         $this->ownedConversations->removeElement($conversation);
-
         return $this;
     }
 
@@ -301,7 +270,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeClientConversation(Conversation $conversation): static
     {
         $this->clientConversations->removeElement($conversation);
-
         return $this;
     }
 
@@ -326,7 +294,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeMessage(Message $message): static
     {
         $this->messages->removeElement($message);
-
         return $this;
+    }
+
+    // Méthodes obligatoires pour UserInterface et PasswordAuthenticatedUserInterface
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->passwordHash;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = match ($this->role) {
+            'admin' => ['ROLE_ADMIN'],
+            'owner' => ['ROLE_OWNER'],
+            default => ['ROLE_CLIENT'],
+        };
+
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Nettoyage des données sensibles si nécessaire
     }
 }

@@ -25,7 +25,6 @@ class AuthController extends AbstractController
     ): JsonResponse {
 
         $data = json_decode($request->getContent(), true);
-        dd($request->getContent(), $data);
 
         if (
             empty($data['name']) ||

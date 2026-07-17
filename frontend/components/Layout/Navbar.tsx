@@ -20,6 +20,7 @@ export default function Navbar() {
     const loadUser = async () => {
       const storedUser = localStorage.getItem("user");
       const token = localStorage.getItem("token");
+      console.log("LOCAL TOKEN:", token);
       // setIsLoading(false);
       if (!storedUser || !token) {
         setUser(null);
@@ -31,11 +32,7 @@ export default function Navbar() {
       setUser(userData);
       // Récupérer le nombre de favoris depuis l'API
       try {
-        const res = await api.get("/api/favorites", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+       const res = await api.get("/api/favorites");
         setFavoritesCount(res.data.length);
       } catch (err) {
         console.error(err);
