@@ -1,6 +1,5 @@
 <?php
 namespace App\Controller;
-use App\Entity\User;
 use App\Service\FavoriteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -65,12 +64,14 @@ class FavoriteController extends AbstractController
                 $user,
                 $propertyId
             );
+
             return new JsonResponse(
                 null,
                 204
             );
 
         } catch (\Throwable $e) {
+
 
             return $this->json(
                 [

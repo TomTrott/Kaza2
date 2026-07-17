@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Service;
-
 use App\Entity\Favorite;
-use App\Entity\Property;
 use App\Entity\User;
 use App\Repository\FavoriteRepository;
 use App\Repository\PropertyRepository;
@@ -55,11 +52,13 @@ class FavoriteService
             'property' => $property
         ]);
 
+
         if ($favorite) {
             throw new \RuntimeException('Already favorite', 409);
         }
 
         $favorite = new Favorite();
+
         $favorite->setUser($user);
         $favorite->setProperty($property);
 
@@ -79,6 +78,7 @@ class FavoriteService
             'user' => $user,
             'property' => $propertyId
         ]);
+
 
         if (!$favorite) {
             throw new \RuntimeException('Favorite not found', 404);
