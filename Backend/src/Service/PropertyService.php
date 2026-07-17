@@ -24,13 +24,19 @@ class PropertyService
     // Liste toutes les propriétés, mappées en DTO
     public function list(): array
     {
-        $properties = $this->properties->findAll();
+        $properties = $this->properties->findAllWithRelations();
 
         return array_map(
             fn(Property $property)
                 => $this->mapper->map($property),
             $properties
         );
+    }
+
+    // Récupère une seule propriété par son id
+    public function get(int $id): ?Property
+    {
+        return $this->properties->find($id);
     }
 
     // Mappe une seule propriété en DTO

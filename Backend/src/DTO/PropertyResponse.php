@@ -13,6 +13,15 @@ class PropertyResponse
         public ?string $cover,
         public string $location,
         public int $pricePerNight,
+        public ?string $description = null,
+        /** @var string[] */
+        public array $pictures = [],
+        /** @var string[] */
+        public array $equipments = [],
+        /** @var string[] */
+        public array $tags = [],
+        public ?float $ratingAvg = null,
+        public ?HostResponse $host = null,
     ) {
     }
 }

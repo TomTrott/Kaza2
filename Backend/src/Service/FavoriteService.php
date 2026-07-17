@@ -18,9 +18,7 @@ class FavoriteService
     // Liste uniquement les favoris de l'utilisateur donné
     public function list(User $user): array
     {
-        $favorites = $this->favorites->findBy([
-            'user' => $user
-        ]);
+        $favorites = $this->favorites->findByUserWithProperty($user);
 
         return array_map(
             fn(Favorite $favorite) => [
@@ -35,6 +33,12 @@ class FavoriteService
             ],
             $favorites
         );
+    }
+
+    // Compte les favoris de l'utilisateur donné (léger, pour la navbar)
+    public function count(User $user): int
+    {
+        return $this->favorites->countByUser($user);
     }
 
     // Ajoute une propriété aux favoris de l'utilisateur donné
