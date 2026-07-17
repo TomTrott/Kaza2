@@ -17,10 +17,7 @@ class FavoriteController extends AbstractController
     #[Route('', methods: ['GET'])]
 public function list(): JsonResponse
 {
-    dd([
-        'authorization' => $_SERVER['HTTP_AUTHORIZATION'] ?? null,
-        'user' => $this->getUser(),
-    ]);
+    return $this->json($this->service->list($this->getUser()));
 }
 
     // Ajoute une propriété aux favoris de l'utilisateur connecté

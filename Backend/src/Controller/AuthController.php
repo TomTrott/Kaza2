@@ -16,14 +16,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class AuthController extends AbstractController
 {
     #[Route('/register', name: 'app_auth_register', methods: ['POST'])]
-    public function register(
-        Request $request,
-        EntityManagerInterface $em,
-        UserRepository $users,
-        UserPasswordHasherInterface $hasher,
-        JWTTokenManagerInterface $jwt
-    ): JsonResponse {
+public function register(
+    Request $request,
+    EntityManagerInterface $em,
+    UserRepository $users,
+    UserPasswordHasherInterface $hasher,
+    JWTTokenManagerInterface $jwt
+): JsonResponse {
 
+    try {
         $data = json_decode($request->getContent(), true);
 
         if (
@@ -65,7 +66,15 @@ class AuthController extends AbstractController
                 'role' => $user->getRole()
             ]
         ], 201);
+
+    } catch (\Throwable $e) {
+        return $this->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
     }
+}
 
     #[Route('/login', name: 'app_auth_login', methods: ['POST'])]
     public function login(
