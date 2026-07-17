@@ -153,6 +153,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Property>
+     */
     public function getProperties(): Collection
     {
         return $this->properties;
@@ -170,11 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeProperty(Property $property): static
     {
-        if ($this->properties->removeElement($property)) {
-            if ($property->getHost() === $this) {
-                $property->setHost(null);
-            }
-        }
+        $this->properties->removeElement($property);
 
         return $this;
     }
@@ -226,12 +225,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeFavorite(Favorite $favorite): static
     {
-        if ($this->favorites->removeElement($favorite)) {
-            // set the owning side to null (unless already changed)
-            if ($favorite->getUser() === $this) {
-                $favorite->setUser(null);
-            }
-        }
+        $this->favorites->removeElement($favorite);
 
         return $this;
     }
@@ -256,12 +250,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeRating(Rating $rating): static
     {
-        if ($this->ratings->removeElement($rating)) {
-            // set the owning side to null (unless already changed)
-            if ($rating->getUser() === $this) {
-                $rating->setUser(null);
-            }
-        }
+        $this->ratings->removeElement($rating);
 
         return $this;
     }
@@ -274,24 +263,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->ownedConversations;
     }
 
-    public function addOwnedConversation(Conversation $ownedConversation): static
+    public function addOwnedConversation(Conversation $conversation): static
     {
-        if (!$this->ownedConversations->contains($ownedConversation)) {
-            $this->ownedConversations->add($ownedConversation);
-            $ownedConversation->setOwner($this);
+        if (!$this->ownedConversations->contains($conversation)) {
+            $this->ownedConversations->add($conversation);
+            $conversation->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeOwnedConversation(Conversation $ownedConversation): static
+    public function removeOwnedConversation(Conversation $conversation): static
     {
-        if ($this->ownedConversations->removeElement($ownedConversation)) {
-            // set the owning side to null (unless already changed)
-            if ($ownedConversation->getOwner() === $this) {
-                $ownedConversation->setOwner(null);
-            }
-        }
+        $this->ownedConversations->removeElement($conversation);
 
         return $this;
     }
@@ -304,24 +288,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->clientConversations;
     }
 
-    public function addClientConversation(Conversation $clientConversation): static
+    public function addClientConversation(Conversation $conversation): static
     {
-        if (!$this->clientConversations->contains($clientConversation)) {
-            $this->clientConversations->add($clientConversation);
-            $clientConversation->setClient($this);
+        if (!$this->clientConversations->contains($conversation)) {
+            $this->clientConversations->add($conversation);
+            $conversation->setClient($this);
         }
 
         return $this;
     }
 
-    public function removeClientConversation(Conversation $clientConversation): static
+    public function removeClientConversation(Conversation $conversation): static
     {
-        if ($this->clientConversations->removeElement($clientConversation)) {
-            // set the owning side to null (unless already changed)
-            if ($clientConversation->getClient() === $this) {
-                $clientConversation->setClient(null);
-            }
-        }
+        $this->clientConversations->removeElement($conversation);
 
         return $this;
     }
@@ -346,12 +325,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeMessage(Message $message): static
     {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getSender() === $this) {
-                $message->setSender(null);
-            }
-        }
+        $this->messages->removeElement($message);
 
         return $this;
     }

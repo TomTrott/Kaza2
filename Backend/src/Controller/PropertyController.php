@@ -17,7 +17,7 @@ class PropertyController extends AbstractController
     ) {
     }
 
-
+    // Liste toutes les propriétés
     #[Route('', methods: ['GET'])]
     public function list(): JsonResponse
     {
@@ -26,12 +26,11 @@ class PropertyController extends AbstractController
         );
     }
 
-
+    // Récupère une propriété par son id
     #[Route('/{id}', methods: ['GET'])]
     public function getById(int $id): JsonResponse
     {
         $property = $this->service->get($id);
-
 
         if (!$property) {
             return $this->json([
@@ -39,13 +38,12 @@ class PropertyController extends AbstractController
             ], 404);
         }
 
-
         return $this->json(
             $this->service->map($property)
         );
     }
 
-
+    // Crée une nouvelle propriété à partir du body JSON
     #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
@@ -56,15 +54,12 @@ class PropertyController extends AbstractController
                 true
             );
 
-
             $property = $this->service->create($data);
-
 
             return $this->json(
                 $this->service->map($property),
                 201
             );
-
 
         } catch (\Throwable $e) {
 
@@ -75,7 +70,7 @@ class PropertyController extends AbstractController
         }
     }
 
-
+    // Met à jour une propriété existante
     #[Route('/{id}', methods: ['PUT'])]
     public function update(
         int $id,
@@ -92,11 +87,9 @@ class PropertyController extends AbstractController
                 )
             );
 
-
             return $this->json(
                 $this->service->map($property)
             );
-
 
         } catch (\Throwable $e) {
 
@@ -107,7 +100,7 @@ class PropertyController extends AbstractController
         }
     }
 
-
+    // Supprime une propriété
     #[Route('/{id}', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
@@ -115,12 +108,10 @@ class PropertyController extends AbstractController
 
             $this->service->delete($id);
 
-
             return new JsonResponse(
                 null,
                 204
             );
-
 
         } catch (\Throwable $e) {
 

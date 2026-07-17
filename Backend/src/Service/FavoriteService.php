@@ -3,10 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Favorite;
+use App\Entity\Property;
 use App\Entity\User;
 use App\Repository\FavoriteRepository;
 use App\Repository\PropertyRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FavoriteService
@@ -14,13 +14,17 @@ class FavoriteService
     public function __construct(
         private EntityManagerInterface $em,
         private FavoriteRepository $favorites,
-        private PropertyRepository $properties,
-        private UserRepository $users
+        private PropertyRepository $properties
     ) {
     }
 
-    public function list(): array
+    // Liste uniquement les favoris de l'utilisateur donné
+    public function list(User $user): array
     {
+        $favorites = $this->favorites->findBy([
+            'user' => $user
+        ]);
+
         return array_map(
             fn(Favorite $favorite) => [
                 'id' => $favorite->getId(),
@@ -32,11 +36,12 @@ class FavoriteService
                     'pricePerNight' => $favorite->getProperty()->getPricePerNight()
                 ]
             ],
-            $this->favorites->findAll()
+            $favorites
         );
     }
 
-    public function add(int $propertyId): array
+    // Ajoute une propriété aux favoris de l'utilisateur donné
+    public function add(User $user, int $propertyId): array
     {
         $property = $this->properties->find($propertyId);
 
@@ -44,17 +49,7 @@ class FavoriteService
             throw new \RuntimeException('Property not found', 404);
         }
 
-        $user = $this->users->findOneBy([]);
-
-        if (!$user) {
-            $user = new User();
-            $user->setName('Test User');
-            $user->setEmail('test@test.com');
-            $user->setRole('user');
-
-            $this->em->persist($user);
-        }
-
+        // Vérifie que le favori n'existe pas déjà (en plus de la contrainte SQL)
         $favorite = $this->favorites->findOneBy([
             'user' => $user,
             'property' => $property
@@ -77,14 +72,9 @@ class FavoriteService
         ];
     }
 
-    public function remove(int $propertyId): void
+    // Retire une propriété des favoris de l'utilisateur donné
+    public function remove(User $user, int $propertyId): void
     {
-        $user = $this->users->findOneBy([]);
-
-        if (!$user) {
-            throw new \RuntimeException('User not found', 404);
-        }
-
         $favorite = $this->favorites->findOneBy([
             'user' => $user,
             'property' => $propertyId

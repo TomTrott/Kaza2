@@ -1,12 +1,18 @@
 <?php
-
 namespace App\Entity;
-
 use App\Repository\FavoriteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FavoriteRepository::class)]
 #[ORM\Table(name: "favorites")]
+// Empêche qu'un même utilisateur ajoute deux fois la même propriété en favori
+#[ORM\UniqueConstraint(
+    name: "unique_user_property_favorite",
+    columns: [
+        "user_id",
+        "property_id"
+    ]
+)]
 class Favorite
 {
     #[ORM\Id]
@@ -14,12 +20,24 @@ class Favorite
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'favorites')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(
+        inversedBy: 'favorites'
+    )]
+    #[ORM\JoinColumn(
+        name: "property_id",
+        nullable: false,
+        onDelete: "CASCADE" // Si la propriété est supprimée, le favori l'est aussi
+    )]
     private ?Property $property = null;
 
-    #[ORM\ManyToOne(inversedBy: 'favorites')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(
+        inversedBy: 'favorites'
+    )]
+    #[ORM\JoinColumn(
+        name: "user_id",
+        nullable: false,
+        onDelete: "CASCADE" // Si l'utilisateur est supprimé, ses favoris aussi
+    )]
     private ?User $user = null;
 
     public function getId(): ?int

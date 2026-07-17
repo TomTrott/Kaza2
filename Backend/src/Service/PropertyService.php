@@ -21,11 +21,10 @@ class PropertyService
     ) {
     }
 
-
+    // Liste toutes les propriétés, mappées en DTO
     public function list(): array
     {
         $properties = $this->properties->findAll();
-
 
         return array_map(
             fn(Property $property)
@@ -34,12 +33,13 @@ class PropertyService
         );
     }
 
-
+    // Mappe une seule propriété en DTO
     public function map(Property $property): PropertyResponse
     {
         return $this->mapper->map($property);
     }
 
+    // Crée une nouvelle propriété (avec récupération ou création de l'hôte)
     public function create(array $data): Property
     {
         if (empty($data['title'])) {
@@ -48,10 +48,12 @@ class PropertyService
 
         $host = null;
 
+        // Cas 1 : on nous donne directement l'id de l'hôte
         if (!empty($data['host_id'])) {
             $host = $this->users->find($data['host_id']);
         }
 
+        // Cas 2 : pas d'id, mais un nom d'hôte -> on cherche ou on crée
         if (!$host && !empty($data['host']['name'])) {
 
             $host = $this->users->findOneBy([
@@ -86,6 +88,7 @@ class PropertyService
         $property->setCover($data['cover'] ?? null);
         $property->setLocation($data['location'] ?? '');
 
+        // Prix par défaut à 80 si absent ou invalide
         $price = isset($data['price_per_night'])
             ? (int) $data['price_per_night']
             : 80;
@@ -103,6 +106,7 @@ class PropertyService
         return $property;
     }
 
+    // Met à jour une propriété existante (champ par champ, seulement s'il est fourni)
     public function update(int $id, array $data): Property
     {
         $property = $this->properties->find($id);
@@ -116,7 +120,7 @@ class PropertyService
             $property->setSlug(
                 $this->generateUniqueSlug(
                     $data['title'],
-                    $property->getId()
+                    $property->getId() // exclut la propriété elle-même du contrôle d'unicité
                 )
             );
         }
@@ -147,6 +151,7 @@ class PropertyService
         return $property;
     }
 
+    // Supprime une propriété
     public function delete(int $id): void
     {
         $property = $this->properties->find($id);
@@ -159,6 +164,7 @@ class PropertyService
         $this->em->flush();
     }
 
+    // Transforme un titre en slug propre (minuscules, sans accents, tirets)
     private function slugify(string $text): string
     {
         $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
@@ -168,6 +174,7 @@ class PropertyService
         return trim($text, '-');
     }
 
+    // Génère un slug unique, en ajoutant un suffixe numérique si besoin (-2, -3, ...)
     private function generateUniqueSlug(
         string $title,
         ?int $excludeId = null
