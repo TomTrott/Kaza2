@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-
 #[Route('/api/properties')]
 class PropertyController extends AbstractController
 {
@@ -17,7 +16,7 @@ class PropertyController extends AbstractController
     ) {
     }
 
-    // Liste toutes les propriétés
+    /** Liste toutes les propriétés*/
     #[Route('', methods: ['GET'])]
     public function list(): JsonResponse
     {
@@ -26,7 +25,7 @@ class PropertyController extends AbstractController
         );
     }
 
-    // Récupère une propriété par son id
+    /** Récupère une propriété par son id */
     #[Route('/{id}', methods: ['GET'])]
     public function getById(int $id): JsonResponse
     {
@@ -43,16 +42,19 @@ class PropertyController extends AbstractController
         );
     }
 
-    // Crée une nouvelle propriété à partir du body JSON
+    /** Crée une nouvelle propriété*/
     #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         try {
 
-            $data = json_decode(
-                $request->getContent(),
-                true
-            );
+            $data = json_decode($request->getContent(), true);
+
+            if (!is_array($data)) {
+                return $this->json([
+                    'error' => 'Invalid JSON'
+                ], 400);
+            }
 
             $property = $this->service->create($data);
 
@@ -63,15 +65,18 @@ class PropertyController extends AbstractController
 
         } catch (\Throwable $e) {
 
-            return $this->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->json(
+                [
+                    'error' => $e->getMessage()
+                ],
+                $e->getCode() > 0 ? $e->getCode() : 500
+            );
 
         }
     }
 
-    // Met à jour une propriété existante
-    #[Route('/{id}', methods: ['PUT'])]
+    /** Met à jour une propriété*/
+    #[Route('/{id}', methods: ['PUT', 'PATCH'])]
     public function update(
         int $id,
         Request $request
@@ -79,12 +84,17 @@ class PropertyController extends AbstractController
     {
         try {
 
+            $data = json_decode($request->getContent(), true);
+
+            if (!is_array($data)) {
+                return $this->json([
+                    'error' => 'Invalid JSON'
+                ], 400);
+            }
+
             $property = $this->service->update(
                 $id,
-                json_decode(
-                    $request->getContent(),
-                    true
-                )
+                $data
             );
 
             return $this->json(
@@ -93,14 +103,17 @@ class PropertyController extends AbstractController
 
         } catch (\Throwable $e) {
 
-            return $this->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->json(
+                [
+                    'error' => $e->getMessage()
+                ],
+                $e->getCode() > 0 ? $e->getCode() : 500
+            );
 
         }
     }
 
-    // Supprime une propriété
+    /** Supprime une propriété */
     #[Route('/{id}', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
@@ -115,9 +128,12 @@ class PropertyController extends AbstractController
 
         } catch (\Throwable $e) {
 
-            return $this->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->json(
+                [
+                    'error' => $e->getMessage()
+                ],
+                $e->getCode() > 0 ? $e->getCode() : 500
+            );
 
         }
     }

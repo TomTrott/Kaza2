@@ -48,34 +48,45 @@ class PropertyService
     // Crée une nouvelle propriété (avec récupération ou création de l'hôte)
     public function create(array $data): Property
     {
-        if (empty($data['title'])) {
+        if (
+    empty($data['title']) ||
+    trim($data['title']) === ''
+) {
             throw new \RuntimeException('title is required', 400);
         }
 
         $host = null;
 
-        // Cas 1 : on nous donne directement l'id de l'hôte
-        if (!empty($data['host_id'])) {
-            $host = $this->users->find($data['host_id']);
-        }
+if (!empty($data['host_id'])) {
 
-        // Cas 2 : pas d'id, mais un nom d'hôte -> on cherche ou on crée
-        if (!$host && !empty($data['host']['name'])) {
+    $host = $this->users->find($data['host_id']);
 
-            $host = $this->users->findOneBy([
-                'name' => $data['host']['name']
-            ]);
+} elseif (!empty($data['host']['name'])) {
 
-            if (!$host) {
+    $host = $this->users->findOneBy([
+        'name' => $data['host']['name']
+    ]);
 
-                $host = new User();
-                $host->setName($data['host']['name']);
-                $host->setPicture($data['host']['picture'] ?? null);
-                $host->setRole('owner');
+    if (!$host) {
 
-                $this->em->persist($host);
-            }
-        }
+        $host = new User();
+
+        $host->setName($data['host']['name']);
+        $host->setPicture(
+            $data['host']['picture'] ?? null
+        );
+        $host->setRole('owner');
+
+        $this->em->persist($host);
+    }
+}
+
+if (!$host) {
+    throw new \RuntimeException(
+        'host_id or host{name,picture} is required',
+        400
+    );
+}
 
         if (!$host) {
             throw new \RuntimeException(
@@ -95,13 +106,14 @@ class PropertyService
         $property->setLocation($data['location'] ?? '');
 
         // Prix par défaut à 80 si absent ou invalide
-        $price = isset($data['price_per_night'])
-            ? (int) $data['price_per_night']
-            : 80;
+        $price = filter_var(
+    $data['price_per_night'] ?? 80,
+    FILTER_VALIDATE_INT
+);
 
-        if ($price <= 0) {
-            $price = 80;
-        }
+if ($price === false || $price <= 0) {
+    $price = 80;
+}
 
         $property->setPricePerNight($price);
         $property->setHost($host);
@@ -121,7 +133,10 @@ class PropertyService
             throw new \RuntimeException("Property not found", 404);
         }
 
-        if (isset($data['title'])) {
+        if (
+    isset($data['title']) &&
+    trim($data['title']) !== ''
+) {
             $property->setTitle($data['title']);
             $property->setSlug(
                 $this->generateUniqueSlug(
@@ -145,11 +160,14 @@ class PropertyService
 
         if (isset($data['price_per_night'])) {
 
-            $price = (int) $data['price_per_night'];
+            $price = filter_var(
+    $data['price_per_night'],
+    FILTER_VALIDATE_INT
+);
 
-            if ($price > 0) {
-                $property->setPricePerNight($price);
-            }
+if ($price !== false && $price > 0) {
+    $property->setPricePerNight($price);
+}
         }
 
         $this->em->flush();
@@ -173,7 +191,7 @@ class PropertyService
     // Transforme un titre en slug propre (minuscules, sans accents, tirets)
     private function slugify(string $text): string
     {
-        $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
+        $text = iconv('UTF-8', 'ASCII//TRANSLIT/IGNORE', $text);
         $text = strtolower($text);
         $text = preg_replace('/[^a-z0-9]+/', '-', $text);
 
