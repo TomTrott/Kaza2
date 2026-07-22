@@ -24,7 +24,7 @@ class FavoriteControllerTest extends WebTestCase
 
         $connection = $em->getConnection();
 
-        // Nettoyage de la base avant chaque test (ordre important à cause des FK)
+        // Nettoyage de la base avant chaque test
         $connection->executeStatement(
             'DELETE FROM favorites'
         );
